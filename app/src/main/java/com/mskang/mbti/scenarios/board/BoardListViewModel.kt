@@ -1,53 +1,54 @@
 package com.mskang.mbti.scenarios.board
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.flowOf
+import androidx.lifecycle.viewModelScope
+import com.mskang.mbti.api.ServerAPI
+import com.mskang.mbti.api.model.posts.PostsMBTIItem
+import com.mskang.mbti.local.app_pref.AppPref
+import com.mskang.mbti.scenarios.login.MainViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
-class BoardListViewModel: ViewModel(){
+@HiltViewModel
+class BoardListViewModel @Inject constructor(
+    private val appPref: AppPref,
+    private val serverAPI: ServerAPI
+): ViewModel(), CoroutineScope {
 
-    val boardListDataList = flowOf(
-        listOf(
-            BoardListData(
-                "대충 싸웠다는글",
-                "대충 싸웠다는내용대충 싸웠다는내용대충 싸웠다는내용대충 싸웠다는내용대충 싸웠다는내용",
-                "2022.01.08",
-                "jfa3ojfwalf"
-            ),
+    val toastEvent = MutableSharedFlow<String>()
 
-            BoardListData(
-                "대충 싸웠다는글1",
-                "대충 싸웠다는내용대충 싸웠다는내용대충 싸웠다는내용대충 싸웠다는내용대충 싸웠다는내용",
-                "2022.01.08",
-                "jfa3ojfwalf"
-            ),
+    override val coroutineContext: CoroutineContext
+        get() = viewModelScope.coroutineContext + CoroutineExceptionHandler { coroutineContext, throwable ->
+            launch {
+                Log.e(TAG, ": ",throwable)
+                toastEvent.emit("로드에 실패하였습니다.\n" + (throwable.message ?: "알 수 없는 오류"))
+            }
+        }
 
-            BoardListData(
-                "대충 싸웠다는글2",
-                "대충 싸웠다는내용대충 싸웠다는내용대충 싸웠다는내용대충 싸웠다는내용대충 싸웠다는내용",
-                "2022.01.08",
-                "jfa3ojfwalf"
-            ),
+    val mbtiSelection = MutableStateFlow(listOf("INFP","ENTP"))
 
-            BoardListData(
-                "대충 싸웠다는글3",
-                "대충 싸웠다는내용대충 싸웠다는내용대충 싸웠다는내용대충 싸웠다는내용대충 싸웠다는내용",
-                "2022.01.08",
-                "jfa3ojfwalf"
-            ),
+    val mbtiPath = mbtiSelection.map { list ->
+        list.joinToString("&")
+    }
 
-            BoardListData(
-                "대충 싸웠다는글4",
-                "대충 싸웠다는내용대충 싸웠다는내용대충 싸웠다는내용대충 싸웠다는내용대충 싸웠다는내용",
-                "2022.01.08",
-                "jfa3ojfwalf"
-            ),
+    val mbtiItems = appPref
+        .accessTokenFlow
+        .distinctUntilChanged()
+        .filterNotNull()
+        .flatMapLatest { token ->
+            mbtiPath.mapNotNull { path ->
+                serverAPI.getPosts(token, path).detail
+            }
+        }
 
-            BoardListData(
-                "대충 싸웠다는글5",
-                "대충 싸웠다는내용대충 싸웠다는내용대충 싸웠다는내용대충 싸웠다는내용대충 싸웠다는내용",
-                "2022.01.08",
-                "jfa3ojfwalf"
-            ),
-        )
-    )
+
+    companion object {
+        private const val TAG = "BoardListViewModel"
+    }
 }

@@ -6,7 +6,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
@@ -19,12 +18,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.mskang.mbti.R
+import com.mskang.mbti.api.model.posts.PostsMBTIItem
 import com.mskang.mbti.theme.*
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class BoardListActivity : ComponentActivity() {
 
     private val viewModel by viewModels<BoardListViewModel>()
@@ -32,9 +32,11 @@ class BoardListActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val boardListDataList by viewModel.boardListDataList.collectAsState(initial = emptyList())
+            val boardListDataList by viewModel.mbtiItems.collectAsState(initial = emptyList())
             MainTheme {
-                Column(modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colors.background)) {
+                Column(modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = MaterialTheme.colors.background)) {
 
                     Box(modifier = Modifier
                         .fillMaxWidth()
@@ -58,7 +60,7 @@ class BoardListActivity : ComponentActivity() {
                             .verticalScroll(state = rememberScrollState())
                     ) {
                         boardListDataList.forEach { boardListData ->
-                            BoardListItem(boardListData = boardListData)
+                            BoardListItem(postsMBTIItem = boardListData)
                             Spacer(modifier = Modifier.height(8.dp))
                         }
                     }
@@ -69,7 +71,7 @@ class BoardListActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun BoardListItem(boardListData: BoardListData) {
+    private fun BoardListItem(postsMBTIItem: PostsMBTIItem) {
         Surface(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -81,13 +83,13 @@ class BoardListActivity : ComponentActivity() {
                 .fillMaxWidth()
                 .clickable {
                     Toast
-                        .makeText(this, boardListData.id, Toast.LENGTH_SHORT)
+                        .makeText(this, postsMBTIItem.uuid, Toast.LENGTH_SHORT)
                         .show()
                 }) {
                 Spacer(modifier = Modifier.height(5.dp))
-                Text(text = boardListData.title, style = previewTitleStyle)
+                Text(text = postsMBTIItem.title, style = previewTitleStyle)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = boardListData.preview, style = previewBodyStyle)
+                Text(text = postsMBTIItem.exContent, style = previewBodyStyle)
                 Spacer(modifier = Modifier.height(5.dp))
             }
         }
