@@ -53,6 +53,7 @@ class MainActivity : ComponentActivity() {
                 launch {
                     viewModel.loginSuccessEvent.collect {
                         startActivity(Intent(this@MainActivity, BoardListActivity::class.java))
+                        finish()
                     }
                 }
             }

@@ -13,6 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -47,6 +48,17 @@ class MainViewModel @Inject constructor(
 
     fun setPassword(it: String) {
         password.value = it
+    }
+
+    init {
+        launch {
+            val response = serverAPI.getAuth(appPref.accessTokenFlow.first() ?: return@launch)
+            if (response.code == 200) {
+                loginSuccessEvent.emit(Unit)
+            } else {
+                toastEvent.emit("회원 정보가 없습니다.")
+            }
+        }
     }
 
     fun onClickSignIn() {

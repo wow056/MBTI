@@ -27,6 +27,11 @@
             android:name=".scenarios.register.RegisterMBTIActivity"
             android:exported="false"
             android:theme="@style/Theme.선넘었나.NoActionBar" />
+
+        <activity
+            android:name=".scenarios.board.WriteActivity"
+            android:exported="false"
+            android:theme="@style/Theme.선넘었나.NoActionBar" />
         <activity
             android:name=".scenarios.login.MainActivity"
             android:exported="true"
