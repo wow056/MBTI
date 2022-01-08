@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskang.mbti.api.ServerAPI
 import com.mskang.mbti.api.model.user.signin.SignInReq
+import com.mskang.mbti.local.app_pref.AppPref
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -18,20 +19,22 @@ import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val serverAPI: ServerAPI
+    private val serverAPI: ServerAPI,
+    private val appPref: AppPref,
 ): ViewModel(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = viewModelScope.coroutineContext + CoroutineExceptionHandler { coroutineContext, throwable ->
             launch {
                 Log.e(TAG, ": ",throwable)
-                toastEvent.emit(throwable.message ?: "알 수 없는 오류")
+                toastEvent.emit("로그인에 실패하였습니다.\n" + (throwable.message ?: "알 수 없는 오류"))
             }
         }
 
     val email = MutableStateFlow("")
     val password = MutableStateFlow("")
     val toastEvent = MutableSharedFlow<String>()
+    val loginSuccessEvent = MutableSharedFlow<Unit>()
 
     val isValid = combine(email, password) { email, password ->
         email.isNotBlank() && Patterns.EMAIL_ADDRESS.matcher(email).matches() && password.isNotEmpty()
@@ -47,9 +50,15 @@ class MainViewModel @Inject constructor(
     }
 
     fun onClickSignIn() {
-        viewModelScope.launch {
-            val result = serverAPI.postUserSignIn(SignInReq(email.value, password.value))
-            toastEvent.emit(result.toString())
+        launch {
+            val response = serverAPI.postUserSignIn(SignInReq(email.value, password.value))
+            if (response.detail?.token != null) {
+                appPref.setAccessToken(response.detail.token)
+                toastEvent.emit(response.detail.token)
+                loginSuccessEvent.emit(Unit)
+            } else {
+                toastEvent.emit("회원 정보가 없습니다.")
+            }
         }
     }
 

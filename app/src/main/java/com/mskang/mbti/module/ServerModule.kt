@@ -12,6 +12,6 @@ import dagger.hilt.components.SingletonComponent
 object ServerModule {
     @Provides
     fun provideServerAPI(): ServerAPI {
-        return RetrofitBuilder.buildServerRetrofit("http://192.168.1.11:8080/").create(ServerAPI::class.java)
+        return RetrofitBuilder.buildServerRetrofit("http://211.239.124.243:19204/").create(ServerAPI::class.java)
     }
 }

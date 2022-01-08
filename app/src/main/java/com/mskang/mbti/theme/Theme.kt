@@ -1,6 +1,8 @@
 package com.mskang.mbti.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.ButtonDefaults.textButtonColors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors

@@ -25,6 +25,31 @@ val hintStyle = TextStyle(
     lineHeight = 20.sp
 )
 
+val navigationBarTextStyle = TextStyle(
+    fontFamily = FontFamily.Default,
+    fontWeight = FontWeight.Bold,
+    fontSize = 18.sp,
+    lineHeight = 28.sp,
+    color = Gray900
+)
+
+val previewTitleStyle = TextStyle(
+    fontFamily = FontFamily.Default,
+    fontWeight = FontWeight.Bold,
+    fontSize = 16.sp,
+    lineHeight = 24.sp,
+    color = Gray900
+)
+
+val previewBodyStyle = TextStyle(
+    fontFamily = FontFamily.Default,
+    fontWeight = FontWeight.Normal,
+    fontSize = 14.sp,
+    lineHeight = 20.sp,
+    color = Gray500
+)
+
+
 // Set of Material typography styles to start with
 val Typography = Typography(
     defaultFontFamily = NotoSansFamily,
@@ -40,6 +65,13 @@ val Typography = Typography(
         fontWeight = FontWeight.Bold,
         fontSize = 18.sp,
         lineHeight = 28.sp,
+        color = Gray900
+    ),
+    h3 = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Bold,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
         color = Gray900
     ),
     body1 = TextStyle(

@@ -1,12 +1,13 @@
 package com.mskang.mbti.scenarios.login
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -20,10 +21,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.mskang.mbti.theme.ColorPrimary
-import com.mskang.mbti.theme.MainTheme
-import com.mskang.mbti.theme.Typography
-import com.mskang.mbti.theme.hintStyle
+import com.mskang.mbti.scenarios.board.BoardListActivity
+import com.mskang.mbti.scenarios.register.RegisterActivity
+import com.mskang.mbti.scenarios.ui.InputBox
+import com.mskang.mbti.theme.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -48,6 +49,12 @@ class MainActivity : ComponentActivity() {
                         Toast.makeText(this@MainActivity, it, Toast.LENGTH_SHORT).show()
                     }
                 }
+
+                launch {
+                    viewModel.loginSuccessEvent.collect {
+                        startActivity(Intent(this@MainActivity, BoardListActivity::class.java))
+                    }
+                }
             }
         }
     }
@@ -58,61 +65,62 @@ class MainActivity : ComponentActivity() {
         val password by viewModel.password.collectAsState()
         val isLoginEnabled by viewModel.isValid.collectAsState(initial = false)
         Column(modifier = Modifier
+            .background(color = MaterialTheme.colors.background)
             .fillMaxSize()
             .padding(horizontal = 24.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center){
             Text("아이콘 들어갈 위치")
-            Text("아이디", style = Typography.h2, modifier = Modifier.fillMaxWidth())
-            Spacer(modifier = Modifier.height(9.dp))
-            OutlinedTextField(
+
+            InputBox(
+                title = "아이디",
                 value = id,
                 onValueChange = {
-                    viewModel.setId(it)
+                                viewModel.setId(it  )
                 },
-                colors = TextFieldDefaults.outlinedTextFieldColors(backgroundColor = Color.White),
-                placeholder = {
-                    Text("아이디", style = hintStyle)
-                },
-                modifier = Modifier.fillMaxWidth()
+                hint = "아이디"
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Text("비밀번호", style = Typography.h2, modifier = Modifier.fillMaxWidth())
-            Spacer(modifier = Modifier.height(9.dp))
-            OutlinedTextField(
+            InputBox(
+                title = "비밀번호",
                 value = password,
                 onValueChange = {
                     viewModel.setPassword(it)
                 },
-                colors = TextFieldDefaults.outlinedTextFieldColors(backgroundColor = Color.White),
-                placeholder = {
-                    Text("비밀번호", style = hintStyle)
-                },
-                modifier = Modifier.fillMaxWidth()
+                hint = "아이디"
             )
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = {
-                 viewModel.onClickSignIn()
+                viewModel.onClickSignIn()
             },
                 modifier = Modifier.fillMaxWidth(),
-                shape = CircleShape,
-                enabled = isLoginEnabled
+                shape = buttonShape,
+                enabled = isLoginEnabled,
+                contentPadding = PaddingValues(vertical = 14.dp)
             ) {
                 Text("로그인")
             }
             Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(28.dp))
             Row(modifier= Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Divider(modifier = Modifier.weight(1f))
+                Divider(modifier = Modifier.weight(1f), color = Color(0xFFD2CFCF))
+                Spacer(modifier = Modifier.width(8.dp))
                 Text("or")
-                Divider(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.width(8.dp))
+                Divider(modifier = Modifier.weight(1f), color = Color(0xFFD2CFCF))
             }
+            Spacer(modifier = Modifier.height(23.dp))
             Text("아직 회원이 아니신가요?")
-            OutlinedButton(onClick = { /*TODO*/ },
-                colors = ButtonDefaults.outlinedButtonColors(
-                    backgroundColor = Color.White,
-                    contentColor = ColorPrimary
-                ),
+            Spacer(modifier = Modifier.height(13.dp))
+            OutlinedButton(
+                onClick = {
+                    startActivity(Intent(this@MainActivity, RegisterActivity::class.java))
+                },
+                colors = activeOutlinedButtonColor,
+                border = activeOutlinedButtonBorder,
+                shape = buttonShape,
+                contentPadding = PaddingValues(vertical = 14.dp),
                 modifier= Modifier.fillMaxWidth()
             ) {
-                Text("회원가입")
+                Text("회원가입", color = ColorPrimary)
             }
         }
     }
