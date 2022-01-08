@@ -36,6 +36,7 @@ class RegisterMBTIViewModel @Inject constructor(
         }
 
     val toastEvent = MutableSharedFlow<String>()
+    val successEvent = MutableSharedFlow<Unit>()
 
     val doNotKnowValue = MutableStateFlow(false)
 
@@ -88,6 +89,7 @@ class RegisterMBTIViewModel @Inject constructor(
                     pValue.value.toString()
                 )
             )
+            successEvent.emit(Unit)
         }
     }
 

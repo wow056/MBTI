@@ -3,7 +3,7 @@ package com.mskang.mbti.api.model.posts
 data class PostsMBTIItem(
     val uuid: String,
     val title: String,
-    val exContent: String?,
+    val content: String?,
     val userMBTI: String?,
     val userId: String?,
     val userName: String?,

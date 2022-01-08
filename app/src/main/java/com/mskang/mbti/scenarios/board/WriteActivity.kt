@@ -115,6 +115,7 @@ class WriteActivity : ComponentActivity() {
                                             Text("#$item", modifier= Modifier.background(
                                                 shape = CircleShape, color = Color.White
                                             ).border(border = BorderStroke(1.dp, color = Color(0xFFD2CFCF)), shape = CircleShape).padding(horizontal = 12.dp, vertical = 4.dp))
+                                            Spacer(modifier = Modifier.width(8.dp))
                                         }
                                     }
                                 }
@@ -152,8 +153,7 @@ class WriteActivity : ComponentActivity() {
                         var selectedList by remember{ mutableStateOf(viewModel.tagList.value) }
                         Column(modifier = Modifier
                             .fillMaxSize()
-                            .background(color = MaterialTheme.colors.background),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            .background(color = MaterialTheme.colors.background)
                         ) {
 
                             Box(modifier = Modifier
@@ -168,7 +168,8 @@ class WriteActivity : ComponentActivity() {
                             Column(
                                 modifier = Modifier
                                     .background(color = Color.White)
-                                    .fillMaxSize()
+                                    .fillMaxSize(),
+                                horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Spacer(modifier = Modifier.height(24.dp))
                                 Text("연관된 MBTI를 선택해주세요.", fontWeight = FontWeight.Bold)

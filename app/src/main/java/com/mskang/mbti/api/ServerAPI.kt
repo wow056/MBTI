@@ -1,6 +1,7 @@
 package com.mskang.mbti.api
 
 import com.mskang.mbti.api.model.mbti.update.MBTIUpdateReq
+import com.mskang.mbti.api.model.post.GetPostRes
 import com.mskang.mbti.api.model.post.PostPostReq
 import com.mskang.mbti.api.model.posts.PostsMBTIRes
 import com.mskang.mbti.api.model.user.EmptyRes
@@ -29,6 +30,10 @@ interface ServerAPI {
 
     @GET("/v1/posts/{mbti}")
     suspend fun getPosts(@Header("xAuth") token: String, @Path("mbti") mbti: String): PostsMBTIRes
+
+
+    @GET("/v1/post/{uuid}")
+    suspend fun getPost(@Header("xAuth") token: String, @Path("uuid") uuid: String): GetPostRes
 
 
     @POST("/v1/post")

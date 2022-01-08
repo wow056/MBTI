@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.mskang.mbti.scenarios.login.MainActivity
 import com.mskang.mbti.scenarios.ui.InputBox
 import com.mskang.mbti.theme.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -108,6 +109,12 @@ class RegisterMBTIActivity : ComponentActivity() {
                 launch {
                     viewModel.toastEvent.collect {
                         Toast.makeText(this@RegisterMBTIActivity, it, Toast.LENGTH_SHORT).show()
+                    }
+                }
+                launch {
+                    viewModel.successEvent.collect {
+                        startActivity(Intent(this@RegisterMBTIActivity, MainActivity::class.java))
+                        finish()
                     }
                 }
             }
