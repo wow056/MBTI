@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">선넘었나</string>
+    <string name="title_activity_board_list">BoardListActivity</string>
+</resources>
