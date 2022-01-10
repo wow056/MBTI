@@ -15,13 +15,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.lang.Exception
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
 class RegisterMBTIViewModel @Inject constructor(
-    private val serverAPI: ServerAPI,
-    private val appPref: AppPref,
+    private val registerRepository: RegisterRepository
 ): ViewModel(), CoroutineScope {
 
     val defaultValue = 50
@@ -61,33 +61,38 @@ class RegisterMBTIViewModel @Inject constructor(
     }
 
     private fun bindMaxValue(state1: MutableStateFlow<Int>, state2: MutableStateFlow<Int>) {
+        val isChanging = AtomicBoolean(false)
         launch {
             state1.collect {
-                state2.value = maxValue - state1.value
+                if (!isChanging.getAndSet(true)) {
+                    state2.value = maxValue - state1.value
+                    isChanging.set(false)
+                }
             }
 
         }
         launch {
             state2.collect {
-                state1.value = maxValue - state2.value
+                if (!isChanging.getAndSet(true)) {
+                    state1.value = maxValue - state2.value
+                    isChanging.set(false)
+                }
             }
         }
     }
 
     fun onClickRegister() {
         launch {
-            serverAPI.postMBTIRegister(
-                appPref.accessTokenFlow.filterNotNull().first(),
-                MBTIUpdateReq(
-                    eValue.value.toString(),
-                    iValue.value.toString(),
-                    nValue.value.toString(),
-                    sValue.value.toString(),
-                    tValue.value.toString(),
-                    fValue.value.toString(),
-                    jValue.value.toString(),
-                    pValue.value.toString()
-                )
+            registerRepository.updateMBTI(
+                !doNotKnowValue.value,
+                iValue.value,
+                eValue.value,
+                nValue.value,
+                sValue.value,
+                tValue.value,
+                fValue.value,
+                jValue.value,
+                pValue.value
             )
             successEvent.emit(Unit)
         }

@@ -4,6 +4,8 @@ import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.mskang.mbti.api.ServerAPI
 import com.mskang.mbti.api.model.user.signin.SignInReq
 import com.mskang.mbti.local.app_pref.AppPref
@@ -15,6 +17,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -31,6 +34,8 @@ class MainViewModel @Inject constructor(
                 toastEvent.emit("로그인에 실패하였습니다.\n" + (throwable.message ?: "알 수 없는 오류"))
             }
         }
+
+    private val auth = Firebase.auth
 
     val email = MutableStateFlow("")
     val password = MutableStateFlow("")
@@ -52,24 +57,22 @@ class MainViewModel @Inject constructor(
 
     init {
         launch {
-            val response = serverAPI.getAuth(appPref.accessTokenFlow.first() ?: return@launch)
-            if (response.code == 200) {
+            auth.currentUser?.reload()
+            val user = auth.currentUser
+            if (user != null) {
                 loginSuccessEvent.emit(Unit)
-            } else {
-                toastEvent.emit("회원 정보가 없습니다.")
             }
         }
     }
 
     fun onClickSignIn() {
         launch {
-            val response = serverAPI.postUserSignIn(SignInReq(email.value, password.value))
-            if (response.detail?.token != null) {
-                appPref.setAccessToken(response.detail.token)
-                toastEvent.emit(response.detail.token)
+            auth.signInWithEmailAndPassword(email.value, password.value).await()
+
+            if (auth.currentUser != null) {
                 loginSuccessEvent.emit(Unit)
             } else {
-                toastEvent.emit("회원 정보가 없습니다.")
+                toastEvent.emit("로그인에 실패하였습니다.")
             }
         }
     }

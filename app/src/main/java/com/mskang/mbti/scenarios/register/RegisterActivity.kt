@@ -49,6 +49,7 @@ class RegisterActivity : ComponentActivity() {
                     Header()
                     Column(modifier = Modifier
                         .fillMaxWidth()
+                        .weight(1f)
                         .verticalScroll(rememberScrollState())
                         .padding(24.dp)) {
                         Spacer(modifier = Modifier.height(24.dp))
@@ -69,7 +70,8 @@ class RegisterActivity : ComponentActivity() {
                                 viewModel.setPassword(it)
                             },
                             hint = "비밀번호를 입력해주세요.",
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                            isPassword = true
                         )
                         Spacer(modifier = Modifier.height(24.dp))
                         InputBox(

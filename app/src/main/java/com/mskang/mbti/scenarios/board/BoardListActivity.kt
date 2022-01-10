@@ -20,6 +20,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHost
@@ -35,6 +38,8 @@ import com.mskang.mbti.scenarios.board.detail.PostActivity
 import com.mskang.mbti.scenarios.mbti.MBTIDetailActivity
 import com.mskang.mbti.theme.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class BoardListActivity : ComponentActivity() {
@@ -170,7 +175,7 @@ class BoardListActivity : ComponentActivity() {
                                             .verticalScroll(state = rememberScrollState())
                                     ) {
                                         boardListDataList.forEach { boardListData ->
-                                            BoardListItem(postsMBTIItem = boardListData, 256, 256)
+                                            BoardListItem(boardListData)
                                             Spacer(modifier = Modifier.height(8.dp))
                                         }
                                     }
@@ -234,10 +239,20 @@ class BoardListActivity : ComponentActivity() {
                 }
             }
         }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                launch {
+                    viewModel.toastEvent.collect {
+                        Toast.makeText(this@BoardListActivity, it, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
     }
 
     @Composable
-    private fun BoardListItem(postsMBTIItem: PostsMBTIItem, likeCount: Int, commentCount: Int) {
+    private fun BoardListItem(boardListItem: BoardListItem) {
         Surface(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -250,26 +265,26 @@ class BoardListActivity : ComponentActivity() {
                 .clickable {
                     startActivity(
                         Intent(this, PostActivity::class.java)
-                            .putExtra(PostActivity.keyUUID, postsMBTIItem.uuid)
+                            .putExtra(PostActivity.keyUUID, boardListItem.id)
                     )
                 }) {
                 Spacer(modifier = Modifier.height(5.dp))
-                Text(text = postsMBTIItem.title, style = previewTitleStyle)
+                Text(text = boardListItem.title, style = previewTitleStyle)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = postsMBTIItem.content.toString(), style = previewBodyStyle)
+                Text(text = boardListItem.content, style = previewBodyStyle)
                 Spacer(modifier = Modifier.height(5.dp))
                 Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "MBTI", color = ColorSecondary)
+                    Text(text = boardListItem.mbti, color = ColorSecondary)
                     Spacer(modifier = Modifier.width(6.dp))
-                    Text(text = postsMBTIItem.userName.toString(), color = Gray500)
+                    Text(text = boardListItem.nickname, color = Gray500)
                     Spacer(modifier = Modifier.weight(1f))
                     Image(painter = painterResource(id = R.drawable.ic_heart), contentDescription = null)
                     Spacer(modifier = Modifier.width(10.dp))
-                    Text(text = likeCount.toString(), color = Gray500)
+                    Text(text = boardListItem.likes.toString(), color = Gray500)
                     Spacer(modifier = Modifier.width(19.dp))
                     Image(painter = painterResource(id = R.drawable.ic_comment), contentDescription = null)
                     Spacer(modifier = Modifier.width(10.dp))
-                    Text(text = commentCount.toString(), color = Gray500)
+                    Text(text = boardListItem.comments.toString(), color = Gray500)
 
                 }
             }

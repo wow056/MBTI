@@ -4,6 +4,8 @@ import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.mskang.mbti.api.ServerAPI
 import com.mskang.mbti.api.model.user.signin.SignInReq
 import com.mskang.mbti.api.model.user.signup.SignUpReq
@@ -15,14 +17,14 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import java.lang.Exception
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val serverAPI: ServerAPI,
-    private val appPref: AppPref,
+    private val registerRepository: RegisterRepository,
 ): ViewModel(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext
@@ -71,20 +73,16 @@ class RegisterViewModel @Inject constructor(
     fun onClickRegister() {
         launch {
             try {
-                val email = email.value
-                val password = password.value
-                val nickname = nickname.value
-                serverAPI.postUserSignUp(
-                    SignUpReq(
-                        email,
-                        password,
-                        password,
-                        nickname,
-                        "INFP"
-                    )
+                registerRepository.register(
+                    email = email.value,
+                    password = password.value,
+                    nickname = nickname.value,
+                    birth = birth.value,
+                    sex = when(sex.value!!) {
+                        Sex.Male -> "M"
+                        Sex.Female -> "F"
+                    }
                 )
-                val tokenRes = serverAPI.postUserSignIn(SignInReq(email, password))
-                appPref.setAccessToken(tokenRes.detail!!.token!!)
                 successEvent.emit(Unit)
             } catch (e: Exception) {
                 Log.e(TAG, "onClickRegister: ", e)

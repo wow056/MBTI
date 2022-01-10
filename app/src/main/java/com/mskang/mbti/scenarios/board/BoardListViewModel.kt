@@ -3,11 +3,6 @@ package com.mskang.mbti.scenarios.board
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskang.mbti.api.ServerAPI
-import com.mskang.mbti.api.model.posts.PostsMBTIItem
-import com.mskang.mbti.api.model.posts.PostsMBTIRes
-import com.mskang.mbti.local.app_pref.AppPref
-import com.mskang.mbti.scenarios.login.MainViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -18,8 +13,7 @@ import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
 class BoardListViewModel @Inject constructor(
-    private val appPref: AppPref,
-    private val serverAPI: ServerAPI
+    private val boardRepository: BoardRepository
 ): ViewModel(), CoroutineScope {
 
     val toastEvent = MutableSharedFlow<String>()
@@ -36,25 +30,11 @@ class BoardListViewModel @Inject constructor(
 
     val mbtiSelection = MutableStateFlow(listOf("ESTP"))
 
-    val mbtiPath = mbtiSelection.map { list ->
-        list.joinToString("&")
+    val mbtiItems = combine(refreshState, mbtiSelection) { _, mbtiSelection ->
+        boardRepository.getPostList(mbtiSelection)
+    }.catch { throwable ->
+        toastEvent.emit(throwable.message ?: "알 수 없는 오류")
     }
-
-    val mbtiItems = appPref
-        .accessTokenFlow
-        .distinctUntilChanged()
-        .filterNotNull()
-        .combine(refreshState) { token, _ ->
-            token
-        }
-        .flatMapLatest { token ->
-            mbtiPath.mapNotNull { path ->
-                serverAPI.getPosts(token, path).detail?.mainContentData
-            }
-        }
-        .catch { throwable ->
-            toastEvent.emit(throwable.message ?: "알 수 없는 오류")
-        }
 
     fun refresh() {
         refreshState.value = refreshState.value + 1

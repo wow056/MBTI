@@ -11,12 +11,14 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.mskang.mbti.theme.Typography
 import com.mskang.mbti.theme.hintStyle
 
 @Composable
-fun InputBox(title: String, value: String, onValueChange: (String) -> Unit, hint: String, keyboardOptions: KeyboardOptions = KeyboardOptions.Default) {
+fun InputBox(title: String, value: String, onValueChange: (String) -> Unit, hint: String, keyboardOptions: KeyboardOptions = KeyboardOptions.Default, isPassword: Boolean = false) {
     Text(title, style = Typography.h2, modifier = Modifier.fillMaxWidth())
     Spacer(modifier = Modifier.height(9.dp))
     TextField(
@@ -33,8 +35,14 @@ fun InputBox(title: String, value: String, onValueChange: (String) -> Unit, hint
         placeholder = {
             Text(hint, style = hintStyle)
         },
+        visualTransformation = if (isPassword) {
+            PasswordVisualTransformation()
+        } else {
+            VisualTransformation.None
+        },
         modifier = Modifier.fillMaxWidth(),
         maxLines = 1,
+        singleLine = true,
         keyboardOptions = keyboardOptions,
         shape = RoundedCornerShape(4.dp)
     )
