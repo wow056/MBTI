@@ -22,9 +22,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -281,12 +283,14 @@ class RegisterMBTIActivity : ComponentActivity() {
         rightValue: Int,
         onChangeRightValue: (Int) -> Unit
     ) {
-        Row(modifier = Modifier.fillMaxWidth()) {
-            Text(text = leftTitle)
-            Text(text = leftDescription)
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text(text = leftTitle, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(text = leftDescription, fontSize = 12.sp,color = Gray500)
             Spacer(modifier = Modifier.weight(1f))
-            Text(text = rightDescription)
-            Text(text = rightTitle)
+            Text(text = rightDescription, fontSize = 12.sp,color = Gray500)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(text = rightTitle, fontSize = 16.sp, fontWeight = FontWeight.Bold)
         }
         Row(modifier = Modifier.fillMaxWidth()) {
 
@@ -301,7 +305,7 @@ class RegisterMBTIActivity : ComponentActivity() {
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent
                 ),
-                modifier = Modifier.width(50.dp),
+                modifier = Modifier.width(60.dp),
                 maxLines = 1,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 shape = RoundedCornerShape(4.dp)
@@ -346,7 +350,7 @@ class RegisterMBTIActivity : ComponentActivity() {
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent
                 ),
-                modifier = Modifier.width(50.dp),
+                modifier = Modifier.width(60.dp),
                 maxLines = 1,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 shape = RoundedCornerShape(4.dp)

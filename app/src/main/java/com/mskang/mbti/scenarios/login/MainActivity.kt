@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -15,12 +16,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.mskang.mbti.R
 import com.mskang.mbti.scenarios.board.BoardListActivity
 import com.mskang.mbti.scenarios.register.RegisterActivity
 import com.mskang.mbti.scenarios.ui.InputBox
@@ -69,8 +74,10 @@ class MainActivity : ComponentActivity() {
             .background(color = MaterialTheme.colors.background)
             .fillMaxSize()
             .padding(horizontal = 24.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center){
-            Text("아이콘 들어갈 위치")
-
+            Image(painter = painterResource(id = R.drawable.ic_launcher), contentDescription = null, modifier = Modifier.size(96.dp))
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("BOUNDARY", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(56.dp))
             InputBox(
                 title = "아이디",
                 value = id,

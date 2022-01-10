@@ -1,6 +1,6 @@
 package com.mskang.mbti.api.model.post
 
-data class GetPostResBody(
+data class asdf(
     val commentlike: List<Int>,
     val commentlist: List<Comment>,
     val contentList: ContentList,

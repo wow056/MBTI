@@ -45,7 +45,7 @@ class PostViewModel @Inject constructor(
         }
         .flatMapLatest { token ->
             uuid.filterNotNull().mapNotNull { uuid ->
-                serverAPI.getPost(token, uuid).detail
+                serverAPI.getPost(token, mapOf("uuid" to uuid)).detail
             }
         }
         .catch { throwable ->

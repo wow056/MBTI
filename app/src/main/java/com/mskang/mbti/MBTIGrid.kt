@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import com.mskang.mbti.theme.ColorPrimary
 import com.mskang.mbti.theme.Gray100
 import com.mskang.mbti.theme.Gray700
+import java.io.Serializable
 
 
 val mbtiList = listOf(
@@ -71,7 +72,7 @@ data class MBTIImage(
     val name: String,
     @DrawableRes val drawableId: Int,
     val color: Color
-)
+): Serializable
 
 val color1 = Color(0xFFE8D9E0)
 
@@ -81,22 +82,21 @@ val color4 = Color(0xFFF7E8CB)
 
 val mbtiImageList = listOf<MBTIImage>(
     MBTIImage("INTJ", R.drawable.intj, color1),
-    MBTIImage("INTJ", R.drawable.image2, color1),
-    MBTIImage("INTJ", R.drawable.image3, color1),
-    MBTIImage("INTJ", R.drawable.image4, color1),
-    MBTIImage("INTJ", R.drawable.image5, color2),
-    MBTIImage("INTJ", R.drawable.image6, color2),
-    MBTIImage("INTJ", R.drawable.image7, color2),
-    MBTIImage("INTJ", R.drawable.image8, color2),
-    MBTIImage("INTJ", R.drawable.image9, color3),
-
-    MBTIImage("INTJ", R.drawable.image10, color3),
-    MBTIImage("INTJ", R.drawable.image11, color3),
-    MBTIImage("INTJ", R.drawable.image12, color3),
-    MBTIImage("INTJ", R.drawable.image13, color4),
-    MBTIImage("INTJ", R.drawable.image14, color4),
-    MBTIImage("INTJ", R.drawable.image15, color4),
-    MBTIImage("INTJ", R.drawable.image16, color4),
+    MBTIImage("INTP", R.drawable.image2, color1),
+    MBTIImage("ENTJ", R.drawable.image3, color1),
+    MBTIImage("ENTP", R.drawable.image4, color1),
+    MBTIImage("ISTJ", R.drawable.image5, color2),
+    MBTIImage("ISTP", R.drawable.image6, color2),
+    MBTIImage("ESTJ", R.drawable.image7, color2),
+    MBTIImage("ESTP", R.drawable.image8, color2),
+    MBTIImage("INFJ", R.drawable.image9, color3),
+    MBTIImage("INFP", R.drawable.image10, color3),
+    MBTIImage("ENFJ", R.drawable.image11, color3),
+    MBTIImage("ENFP", R.drawable.image12, color3),
+    MBTIImage("ISFJ", R.drawable.image13, color4),
+    MBTIImage("ISFP", R.drawable.image14, color4),
+    MBTIImage("ESFJ", R.drawable.image15, color4),
+    MBTIImage("ESFP", R.drawable.image16, color4),
 )
 
 @OptIn(ExperimentalFoundationApi::class)

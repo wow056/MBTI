@@ -32,6 +32,7 @@ import com.mskang.mbti.MBTIImageGrid
 import com.mskang.mbti.R
 import com.mskang.mbti.api.model.posts.PostsMBTIItem
 import com.mskang.mbti.scenarios.board.detail.PostActivity
+import com.mskang.mbti.scenarios.mbti.MBTIDetailActivity
 import com.mskang.mbti.theme.*
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -86,7 +87,7 @@ class BoardListActivity : ComponentActivity() {
                                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                                 val currentDestination = navBackStackEntry?.destination
                                 BottomNavigationItem(
-                                    icon = { Icon(Icons.Filled.Favorite, contentDescription = null) },
+                                    icon = { Image(painter = painterResource(id = R.drawable.ic_home), contentDescription = null ) },
                                     selected = currentDestination?.hierarchy?.any { it.route == "board" } == true,
                                     onClick = {
                                         navController.navigate("board") {
@@ -105,7 +106,7 @@ class BoardListActivity : ComponentActivity() {
                                     }
                                 )
                                 BottomNavigationItem(
-                                    icon = { Icon(Icons.Filled.Favorite, contentDescription = null) },
+                                    icon = { Image(painter = painterResource(id = R.drawable.ic_mbti), contentDescription = null ) },
                                     selected = currentDestination?.hierarchy?.any { it.route == "mbti"  } == true,
                                     onClick = {
                                         navController.navigate("mbti" ) {
@@ -128,8 +129,6 @@ class BoardListActivity : ComponentActivity() {
                     ) { innerPadding ->
                         NavHost(navController, startDestination = "board", Modifier.padding(innerPadding)) {
                             composable("board") {
-
-
                                 Column(
                                     modifier = Modifier
                                         .fillMaxSize()
@@ -137,16 +136,33 @@ class BoardListActivity : ComponentActivity() {
                                     Row(modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(horizontal = 24.dp, vertical = 8.dp)
-                                        .horizontalScroll(rememberScrollState()).clickable { navController.navigate("select_mbti") }, verticalAlignment = Alignment.CenterVertically) {
+                                        .horizontalScroll(rememberScrollState())
+                                        .clickable { navController.navigate("select_mbti") }, verticalAlignment = Alignment.CenterVertically) {
                                         viewModel.mbtiSelection.collectAsState().value.forEach { item ->
-                                            Text("#$item", modifier= Modifier.background(
-                                                shape = CircleShape, color = Color.White
-                                            ).border(border = BorderStroke(1.dp, color = Color(0xFFD2CFCF)), shape = CircleShape).padding(horizontal = 12.dp, vertical = 4.dp))
+                                            Text("#$item", modifier= Modifier
+                                                .background(
+                                                    shape = CircleShape, color = Color.White
+                                                )
+                                                .border(
+                                                    border = BorderStroke(
+                                                        1.dp,
+                                                        color = Color(0xFFD2CFCF)
+                                                    ), shape = CircleShape
+                                                )
+                                                .padding(horizontal = 12.dp, vertical = 4.dp))
                                             Spacer(modifier = Modifier.width(8.dp))
                                         }
-                                        Text("+", modifier= Modifier.background(
-                                            shape = CircleShape, color = Color.White
-                                        ).border(border = BorderStroke(1.dp, color = Color(0xFFD2CFCF)), shape = CircleShape).padding(horizontal = 12.dp, vertical = 4.dp))
+                                        Text("+", modifier= Modifier
+                                            .background(
+                                                shape = CircleShape, color = Color.White
+                                            )
+                                            .border(
+                                                border = BorderStroke(
+                                                    1.dp,
+                                                    color = Color(0xFFD2CFCF)
+                                                ), shape = CircleShape
+                                            )
+                                            .padding(horizontal = 12.dp, vertical = 4.dp))
                                     }
                                     Column(
                                         modifier = Modifier
@@ -193,7 +209,9 @@ class BoardListActivity : ComponentActivity() {
                                             viewModel.mbtiSelection.value = selectedList
                                             navController.popBackStack()
                                         },
-                                            modifier = Modifier.padding(horizontal = 24.dp).fillMaxWidth(),
+                                            modifier = Modifier
+                                                .padding(horizontal = 24.dp)
+                                                .fillMaxWidth(),
                                             shape = buttonShape,
                                             contentPadding = PaddingValues(vertical = 14.dp)
                                         ) {
@@ -205,7 +223,11 @@ class BoardListActivity : ComponentActivity() {
                                 }
                             }
                             composable("mbti") {
-                                MBTIImageGrid(onClickItem = {})
+                                MBTIImageGrid(onClickItem = { image ->
+                                    startActivity(Intent(this@BoardListActivity, MBTIDetailActivity::class.java)
+                                        .putExtra(MBTIDetailActivity.keyMBTIImage, image)
+                                    )
+                                })
                             }
                         }
                     }

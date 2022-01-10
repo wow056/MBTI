@@ -32,8 +32,8 @@ interface ServerAPI {
     suspend fun getPosts(@Header("xAuth") token: String, @Path("mbti") mbti: String): PostsMBTIRes
 
 
-    @GET("/v1/post/{uuid}")
-    suspend fun getPost(@Header("xAuth") token: String, @Path("uuid") uuid: String): GetPostRes
+    @POST("/v1/getpost")
+    suspend fun getPost(@Header("xAuth") token: String, @Body request: Map<String, String>): GetPostRes
 
 
     @POST("/v1/post")
