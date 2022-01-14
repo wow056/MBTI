@@ -25,5 +25,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v2
+      - name: Change wrapper permissions
+        run: chmod +x ./gradlew
       - name: Build APK
         run: './gradlew assembleRelease --stacktrace'
