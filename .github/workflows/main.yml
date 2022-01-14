@@ -19,8 +19,9 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    container: cimg/android:2021.12
-
+    container:
+      image: cimg/android:2021.12
+      options: --user root
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v2
