@@ -5,6 +5,7 @@ plugins {
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
     id 'com.google.gms.google-services'
+    id 'com.google.firebase.appdistribution'
 }
 
 android {
@@ -47,6 +48,15 @@ android {
     packagingOptions {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+
+    buildTypes {
+        release {
+            firebaseAppDistribution {
+                artifactType="APK"
+                testers="kuy165@naver.com, wow056@naver.com"
+            }
         }
     }
 }
