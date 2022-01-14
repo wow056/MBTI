@@ -28,6 +28,11 @@ jobs:
       - name: Change wrapper permissions
         run: chmod +x ./gradlew
       - name: Build APK
-        run: './gradlew assembleRelease appDistributionUploadRelease --stacktrace'
+        run: './gradlew assembleRelease appDistributionUploadRelease -PappDistribution-releaseNotes="${{ github.event.commits[0].message }}"'
         env:
           FIREBASE_TOKEN: 1//0e2GFNo6ZaX_7CgYIARAAGA4SNwF-L9Ir4fLERvTYeCssKG6VK1NKK_YYDvUn3E_zK6bd2UgLJkW4POQ_k7P9um1bXEP_J_Yl8CY
+      - name: upload apk artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: app-release-unsigned.apk
+          path: app/build/outputs/apk/**/*.apk
