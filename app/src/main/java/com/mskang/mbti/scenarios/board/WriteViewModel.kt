@@ -18,7 +18,8 @@ import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
 class WriteViewModel @Inject constructor(
-    private val boardRepository: BoardRepository
+    private val serverAPI: ServerAPI,
+    private val appPref: AppPref
 ): ViewModel(), CoroutineScope {
 
     val toastEvent = MutableSharedFlow<String>()
@@ -38,8 +39,17 @@ class WriteViewModel @Inject constructor(
 
     fun onClickFooter() {
         launch {
-            boardRepository.postPost(title.value, body.value, tagList.value)
-            successEvent.emit(Unit)
+            val response = serverAPI.postPost(
+                appPref.accessTokenFlow.filterNotNull().first(),
+                PostPostReq(
+                    title.value,
+                    body.value,
+                    tagList.value.joinToString("&")
+                )
+            )
+            if (response.code == 200) {
+                successEvent.emit(Unit)
+            }
         }
     }
 

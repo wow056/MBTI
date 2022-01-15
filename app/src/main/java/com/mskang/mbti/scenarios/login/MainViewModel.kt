@@ -57,22 +57,24 @@ class MainViewModel @Inject constructor(
 
     init {
         launch {
-            auth.currentUser?.reload()
-            val user = auth.currentUser
-            if (user != null) {
+            val response = serverAPI.getAuth(appPref.accessTokenFlow.first() ?: return@launch)
+            if (response.code == 200) {
                 loginSuccessEvent.emit(Unit)
+            } else {
+                toastEvent.emit("회원 정보가 없습니다.")
             }
         }
     }
 
     fun onClickSignIn() {
         launch {
-            auth.signInWithEmailAndPassword(email.value, password.value).await()
-
-            if (auth.currentUser != null) {
+            val response = serverAPI.postUserSignIn(SignInReq(email.value, password.value))
+            if (response.detail?.token != null) {
+                appPref.setAccessToken(response.detail.token)
+                toastEvent.emit(response.detail.token)
                 loginSuccessEvent.emit(Unit)
             } else {
-                toastEvent.emit("로그인에 실패하였습니다.")
+                toastEvent.emit("회원 정보가 없습니다.")
             }
         }
     }

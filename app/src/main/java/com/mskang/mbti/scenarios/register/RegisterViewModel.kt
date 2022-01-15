@@ -24,7 +24,7 @@ import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val registerRepository: RegisterRepository,
+    private val serverAPI: ServerAPI
 ): ViewModel(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext
@@ -73,15 +73,13 @@ class RegisterViewModel @Inject constructor(
     fun onClickRegister() {
         launch {
             try {
-                registerRepository.register(
-                    email = email.value,
-                    password = password.value,
-                    nickname = nickname.value,
-                    birth = birth.value,
-                    sex = when(sex.value!!) {
-                        Sex.Male -> "M"
-                        Sex.Female -> "F"
-                    }
+                serverAPI.postUserSignUp(
+                    SignUpReq(
+                        email = email.value,
+                        password = password.value,
+                        password2 = password.value,
+                        nickname = nickname.value,
+                    )
                 )
                 successEvent.emit(Unit)
             } catch (e: Exception) {

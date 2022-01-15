@@ -34,6 +34,7 @@ import com.mskang.mbti.MBTIGrid
 import com.mskang.mbti.MBTIImageGrid
 import com.mskang.mbti.R
 import com.mskang.mbti.api.model.posts.PostsMBTIItem
+import com.mskang.mbti.api.model.posts.PostsMBTIResBody
 import com.mskang.mbti.scenarios.board.detail.PostActivity
 import com.mskang.mbti.scenarios.mbti.MBTIDetailActivity
 import com.mskang.mbti.theme.*
@@ -174,8 +175,8 @@ class BoardListActivity : ComponentActivity() {
                                             .fillMaxSize()
                                             .verticalScroll(state = rememberScrollState())
                                     ) {
-                                        boardListDataList.forEach { boardListData ->
-                                            BoardListItem(boardListData)
+                                        boardListDataList.forEach { (content, comments, likes) ->
+                                            BoardListItem(content, comments, likes)
                                             Spacer(modifier = Modifier.height(8.dp))
                                         }
                                     }
@@ -252,7 +253,7 @@ class BoardListActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun BoardListItem(boardListItem: BoardListItem) {
+    private fun BoardListItem(postsMBTIItem: PostsMBTIItem, comments: Int, likes: Int) {
         Surface(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -265,26 +266,26 @@ class BoardListActivity : ComponentActivity() {
                 .clickable {
                     startActivity(
                         Intent(this, PostActivity::class.java)
-                            .putExtra(PostActivity.keyUUID, boardListItem.id)
+                            .putExtra(PostActivity.keyUUID, postsMBTIItem.uuid)
                     )
                 }) {
                 Spacer(modifier = Modifier.height(5.dp))
-                Text(text = boardListItem.title, style = previewTitleStyle)
+                Text(text = postsMBTIItem.title, style = previewTitleStyle)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = boardListItem.content, style = previewBodyStyle)
+                Text(text = postsMBTIItem.content.toString(), style = previewBodyStyle)
                 Spacer(modifier = Modifier.height(5.dp))
                 Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = boardListItem.mbti, color = ColorSecondary)
+                    Text(text = postsMBTIItem.userMBTI.toString(), color = ColorSecondary)
                     Spacer(modifier = Modifier.width(6.dp))
-                    Text(text = boardListItem.nickname, color = Gray500)
+                    Text(text = postsMBTIItem.userName.toString(), color = Gray500)
                     Spacer(modifier = Modifier.weight(1f))
                     Image(painter = painterResource(id = R.drawable.ic_heart), contentDescription = null)
                     Spacer(modifier = Modifier.width(10.dp))
-                    Text(text = boardListItem.likes.toString(), color = Gray500)
+                    Text(text = likes.toString(), color = Gray500)
                     Spacer(modifier = Modifier.width(19.dp))
                     Image(painter = painterResource(id = R.drawable.ic_comment), contentDescription = null)
                     Spacer(modifier = Modifier.width(10.dp))
-                    Text(text = boardListItem.comments.toString(), color = Gray500)
+                    Text(text = comments.toString(), color = Gray500)
 
                 }
             }

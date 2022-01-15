@@ -21,7 +21,8 @@ import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
 class RegisterMBTIViewModel @Inject constructor(
-    private val registerRepository: RegisterRepository
+    private val serverAPI: ServerAPI,
+    private val appPref: AppPref
 ): ViewModel(), CoroutineScope {
 
     val defaultValue = 50
@@ -83,16 +84,18 @@ class RegisterMBTIViewModel @Inject constructor(
 
     fun onClickRegister() {
         launch {
-            registerRepository.updateMBTI(
-                !doNotKnowValue.value,
-                iValue.value,
-                eValue.value,
-                nValue.value,
-                sValue.value,
-                tValue.value,
-                fValue.value,
-                jValue.value,
-                pValue.value
+            serverAPI.postMBTIRegister(
+                appPref.accessTokenFlow.filterNotNull().first(),
+                MBTIUpdateReq(
+                    eValue.value.toString(),
+                    iValue.value.toString(),
+                    nValue.value.toString(),
+                    sValue.value.toString(),
+                    tValue.value.toString(),
+                    fValue.value.toString(),
+                    jValue.value.toString(),
+                    pValue.value.toString()
+                )
             )
             successEvent.emit(Unit)
         }
