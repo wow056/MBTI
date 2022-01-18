@@ -1,15 +1,11 @@
 package com.mskang.mbti.api
 
 import com.mskang.mbti.api.model.mbti.update.MBTIUpdateReq
-import com.mskang.mbti.api.model.post.GetPostRes
 import com.mskang.mbti.api.model.post.GetPostResBody
 import com.mskang.mbti.api.model.post.PostPostReq
-import com.mskang.mbti.api.model.posts.PostsMBTIRes
 import com.mskang.mbti.api.model.posts.PostsMBTIResBody
 import com.mskang.mbti.api.model.user.BaseResponseModelImpl
-import com.mskang.mbti.api.model.user.EmptyRes
 import com.mskang.mbti.api.model.user.signin.SignInReq
-import com.mskang.mbti.api.model.user.TokenRes
 import com.mskang.mbti.api.model.user.TokenResBody
 import com.mskang.mbti.api.model.user.signup.SignUpReq
 import retrofit2.http.*

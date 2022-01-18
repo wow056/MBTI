@@ -39,7 +39,7 @@ class BoardListViewModel @Inject constructor(
         list.joinToString("&")
     }
 
-    val mbtiItems = appPref
+    val postItems = appPref
         .accessTokenFlow
         .distinctUntilChanged()
         .filterNotNull()
@@ -48,7 +48,7 @@ class BoardListViewModel @Inject constructor(
         }
         .flatMapLatest { token ->
             mbtiPath.mapNotNull { path ->
-                serverAPI.getPosts(token, path).detail?.getTriple()
+                serverAPI.getPosts(token, path).detail?.getContentCommentLike()
             }
         }
         .catch { throwable ->

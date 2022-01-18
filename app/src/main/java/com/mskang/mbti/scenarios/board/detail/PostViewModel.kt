@@ -4,10 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskang.mbti.api.ServerAPI
-import com.mskang.mbti.api.model.posts.PostsMBTIItem
-import com.mskang.mbti.api.model.posts.PostsMBTIRes
 import com.mskang.mbti.local.app_pref.AppPref
-import com.mskang.mbti.scenarios.login.MainViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope

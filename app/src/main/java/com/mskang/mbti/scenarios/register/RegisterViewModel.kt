@@ -24,7 +24,8 @@ import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val serverAPI: ServerAPI
+    private val serverAPI: ServerAPI,
+    private val appPref: AppPref
 ): ViewModel(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext
@@ -73,7 +74,7 @@ class RegisterViewModel @Inject constructor(
     fun onClickRegister() {
         launch {
             try {
-                serverAPI.postUserSignUp(
+                val signUpRes = serverAPI.postUserSignUp(
                     SignUpReq(
                         email = email.value,
                         password = password.value,
@@ -81,7 +82,20 @@ class RegisterViewModel @Inject constructor(
                         nickname = nickname.value,
                     )
                 )
-                successEvent.emit(Unit)
+                if (signUpRes.code != 200) {
+                    toastEvent.emit(signUpRes.status ?: "알 수 없는 오류")
+                    return@launch
+                }
+                val signInRes = serverAPI.postUserSignIn(
+                    SignInReq(
+                        email = email.value,
+                        password = password.value
+                    )
+                )
+                if (signInRes.code == 200 && signInRes.detail != null) {
+                    appPref.setAccessToken(signInRes.detail.token)
+                    successEvent.emit(Unit)
+                }
             } catch (e: Exception) {
                 Log.e(TAG, "onClickRegister: ", e)
                 toastEvent.emit("회원가입 실패, ${e.message}")

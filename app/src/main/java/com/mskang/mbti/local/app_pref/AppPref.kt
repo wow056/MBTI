@@ -15,9 +15,10 @@ import javax.inject.Singleton
 @Singleton
 class AppPref @Inject constructor(@ApplicationContext private val context: Context) {
 
-    val keyAccessToken = stringPreferencesKey("access_token")
+    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "app_pref")
 
-    val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "app_pref")
+    private val keyAccessToken = stringPreferencesKey("access_token")
+
 
     val accessTokenFlow: Flow<String?> = context.dataStore.data
         .map { preferences ->
