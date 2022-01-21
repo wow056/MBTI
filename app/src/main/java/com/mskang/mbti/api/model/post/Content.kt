@@ -1,6 +1,6 @@
 package com.mskang.mbti.api.model.post
 
-data class ContentList(
+data class Content(
     val content: String,
     val date: String,
     val idx: Int,

@@ -48,7 +48,7 @@ class BoardListViewModel @Inject constructor(
         }
         .flatMapLatest { token ->
             mbtiPath.mapNotNull { path ->
-                serverAPI.getPosts(token, path).detail?.getContentCommentLike()
+                serverAPI.getPosts(token, path).detail
             }
         }
         .catch { throwable ->

@@ -4,13 +4,11 @@ import kotlin.math.min
 
 data class PostsMBTIResBody(
     val mainContentData: List<PostsMBTIItem>,
-    val commentList: List<Int>,
-    val likeList: List<Int>
+    val commentListData: List<Int>,
+    val likeListData: List<Int>,
+    val nicknameList: List<String>,
+    val mbtiList: List<String?>
 ) {
-    fun getContentCommentLike(): List<Triple<PostsMBTIItem, Int, Int>> {
-        val length = minOf(mainContentData.size, commentList.size, likeList.size)
-        return List(length) { index ->
-            Triple(mainContentData[index], commentList[index], likeList[index])
-        }
-    }
+    val minLength: Int
+        get() = minOf(mainContentData.size, commentListData.size, likeListData.size, nicknameList.size, mbtiList.size)
 }

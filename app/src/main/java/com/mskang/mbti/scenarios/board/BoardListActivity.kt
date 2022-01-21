@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -212,7 +213,7 @@ class BoardListActivity : ComponentActivity() {
         viewModel: BoardListViewModel = hiltViewModel(),
         navController: NavHostController,
     ) {
-        val postItems by viewModel.postItems.collectAsState(initial = emptyList())
+        val postItems by viewModel.postItems.collectAsState(initial = null)
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -255,14 +256,18 @@ class BoardListActivity : ComponentActivity() {
                         .padding(horizontal = 12.dp, vertical = 4.dp)
                 )
             }
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(state = rememberScrollState())
-            ) {
-                postItems.forEach { (content, comments, likes) ->
-                    BoardListItem(content, comments, likes)
-                    Spacer(modifier = Modifier.height(8.dp))
+            LazyColumn(modifier = Modifier
+                .fillMaxSize()) {
+                postItems?.let { notNullPostItems ->
+                    items(notNullPostItems.minLength) { index ->
+                        BoardListItem(
+                            notNullPostItems.mainContentData[index],
+                            notNullPostItems.commentListData[index],
+                            notNullPostItems.likeListData[index],
+                            notNullPostItems.nicknameList[index],
+                            notNullPostItems.mbtiList[index].toString()
+                        )
+                    }
                 }
             }
         }
@@ -317,7 +322,7 @@ class BoardListActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun BoardListItem(postsMBTIItem: PostsMBTIItem, comments: Int, likes: Int) {
+    private fun BoardListItem(postsMBTIItem: PostsMBTIItem, comments: Int, likes: Int, nickname: String, mbti: String) {
         Surface(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -342,9 +347,9 @@ class BoardListActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = postsMBTIItem.userMBTI.toString(), color = ColorSecondary)
+                    Text(text = mbti, color = ColorSecondary)
                     Spacer(modifier = Modifier.width(6.dp))
-                    Text(text = postsMBTIItem.userName.toString(), color = Gray500)
+                    Text(text = nickname, color = Gray500)
                     Spacer(modifier = Modifier.weight(1f))
                     Image(
                         painter = painterResource(id = R.drawable.ic_heart),
