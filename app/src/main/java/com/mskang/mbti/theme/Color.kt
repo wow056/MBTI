@@ -16,6 +16,8 @@ val Gray500 = Color(0xFF7A7676)
 val Gray700 = Color(0xFF3D3A3A)
 val Gray800 = Color(0xFF333333)
 val Gray900 = Color(0xFF201F1F)
+val ColorD2CFCF = Color(0xFFD2CFCF)
+val ColorF3F3F3 = Color(0xFFF3F3F3)
 
 val activeOutlinedButtonColor
     @Composable
